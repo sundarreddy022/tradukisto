@@ -30,5 +30,7 @@ class IndianIntegerValuesTest extends Specification{
         10000001      | "one crore one"
         100000001     | "ten crore one"
         999999999     | "ninety-nine crore ninety-nine lakh ninety-nine thousand nine hundred ninety-nine"
+        1000000001    | "one hundred crore one"
+        Integer.MAX_VALUE | "two hundred fourteen crore seventy-four lakh eighty-three thousand six hundred forty-seven"
     }
 }
