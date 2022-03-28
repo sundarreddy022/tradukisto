@@ -4,23 +4,22 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.Lists.reverse;
 
 import com.google.common.base.Joiner;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import pl.allegro.finance.tradukisto.internal.GenderAwareIntegerToStringConverter;
 import pl.allegro.finance.tradukisto.internal.IntegerToStringConverter;
 import pl.allegro.finance.tradukisto.internal.ToStringConverter;
-import pl.allegro.finance.tradukisto.internal.converters.HundredsToWordsConverter;
 import pl.allegro.finance.tradukisto.internal.languages.PluralForms;
 import pl.allegro.finance.tradukisto.internal.support.IndianNumberChunking;
 
 public class IndianIntegerToWordsConverter implements IntegerToStringConverter {
 
   private final IndianNumberChunking numberChunking = new IndianNumberChunking();
-
   protected final GenderAwareIntegerToStringConverter hundredsToWordsConverter;
   private final List<PluralForms> pluralForms;
+
+  private final Integer DIVISOR = 10000000;
 
   public IndianIntegerToWordsConverter(
       GenderAwareIntegerToStringConverter hundredsToWordsConverter, List<PluralForms> pluralForms) {
@@ -38,9 +37,17 @@ public class IndianIntegerToWordsConverter implements IntegerToStringConverter {
   @Override
   public String asWords(Integer value) {
     checkArgument(value >= 0, "can't convert negative numbers for value %d", value);
+    StringBuilder stringBuilder = new StringBuilder();
+
+    if (value.toString().length() > 7) {
+
+      stringBuilder.append(asWords(value / DIVISOR)).append(" crore ");
+      stringBuilder.append(asWords(value % DIVISOR));
+
+      return stringBuilder.toString();
+    }
 
     List<Integer> valueChunks = numberChunking.chunk(value);
-
     List<PluralForms> formsToUse = reverse(pluralForms.subList(0, valueChunks.size()));
 
     return joinValueChunksWithForms(valueChunks.iterator(), formsToUse.iterator());
@@ -70,5 +77,4 @@ public class IndianIntegerToWordsConverter implements IntegerToStringConverter {
 
     return Joiner.on(" ").join(result).trim();
   }
-
 }
