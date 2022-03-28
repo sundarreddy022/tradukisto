@@ -140,11 +140,11 @@ public final class Container {
     IndianValues values = new IndianValues();
     HundredsToWordsConverter hundredsToWordsConverter =
         new HundredsToWordsConverter(values.baseNumbers(), values.twoDigitsNumberSeparator());
-    IndianIntegerToWordsConverter integerConverter =
+    IntegerToStringConverter integerConverter =
         new IndianIntegerToWordsConverter(hundredsToWordsConverter, values.pluralForms());
 
     BigDecimalToStringConverter bigDecimalToStringConverter =
-        new IndianBigDecimalToBankingMoneyConverter(integerConverter, values.currency());
+        new BigDecimalToBankingMoneyConverter(integerConverter, values.currency());
 
     return new Container(integerConverter, bigDecimalToStringConverter);
   }
